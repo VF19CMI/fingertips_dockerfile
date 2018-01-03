@@ -36,6 +36,7 @@ RUN apt-get update && apt-get install -y \
       vim \
       tmux \
       wget \
+      libmysqlclient-dev \
       libsqlite3-dev ;
 
 RUN apt-get -q update \
