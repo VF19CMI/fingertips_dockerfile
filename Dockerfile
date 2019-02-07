@@ -30,6 +30,7 @@ RUN apt-get update && apt-get install -y \
       libpq-dev \
       postgresql \
       postgresql-contrib \
+      postgresql-server-dev-9.3 \
       apt-transport-https\
       nodejs \
       sqlite3 \
@@ -66,7 +67,9 @@ RUN rbenv rehash
 
 # Oracle stuff
 RUN mkdir -p /opt/oracle
+RUN mkdir -p /opt/oracle_fdw
 COPY ./vendor/*.rpm /opt/oracle/
+COPY ./vendor/oracle_fdw/* /opt/oracle_fdw/
 
 ENV ORACLE_HOME /usr/lib/oracle/12.1/client64
 ENV LD_LIBRARY_PATH $ORACLE_HOME/lib/:$LD_LIBRARY_PATH
@@ -77,3 +80,9 @@ ENV PATH $ORACLE_HOME/bin:$PATH
 RUN alien -i /opt/oracle/oracle-instantclient12.1-basic-12.1.0.2.0-1.x86_64.rpm \
   && alien -i /opt/oracle/oracle-instantclient12.1-devel-12.1.0.2.0-1.x86_64.rpm \
   && alien -i /opt/oracle/oracle-instantclient12.1-sqlplus-12.1.0.2.0-1.x86_64.rpm
+
+RUN cd /opt/oracle_fdw && make && make install
+
+RUN echo "LD_LIBRARY_PATH='/usr/lib/oracle/12.1/client64/lib'" > /etc/postgresql/9.3/main/environment
+
+ENTRYPOINT service postgresql start && /bin/bash

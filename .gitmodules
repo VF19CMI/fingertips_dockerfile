@@ -1,0 +1,3 @@
+[submodule "n"]
+	path = vendor/oracle_fdw
+	url = https://github.com/laurenz/oracle_fdw.git
