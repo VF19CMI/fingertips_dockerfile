@@ -83,4 +83,5 @@ RUN alien -i /opt/oracle/oracle-instantclient12.1-basic-12.1.0.2.0-1.x86_64.rpm 
 
 RUN cd /opt/oracle_fdw && make && make install
 
-RUN echo "LD_LIBRARY_PATH='/usr/lib/oracle/12.1/client64/lib'" > /etc/postgresql/9.3/main/environment
+RUN echo "LD_LIBRARY_PATH='/usr/lib/oracle/12.1/client64/lib'" >> /etc/postgresql/9.3/main/environment
+RUN echo "NLS_LANG=American_America.UTF8" >> /etc/postgresql/9.3/main/environment
