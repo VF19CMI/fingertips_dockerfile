@@ -85,3 +85,10 @@ RUN cd /opt/oracle_fdw && make && make install
 
 RUN echo "LD_LIBRARY_PATH='/usr/lib/oracle/12.1/client64/lib'" >> /etc/postgresql/9.3/main/environment
 RUN echo "NLS_LANG=American_America.UTF8" >> /etc/postgresql/9.3/main/environment
+
+ENV PGDATA /dev/shm/pgdata/data
+RUN postgresfile=/usr/share/postgresql/9.3/postgresql.conf.sample; \
+    echo fsync=off >> $postgresfile &&\
+    echo synchronous_commit=off >> $postgresfile &&\
+    echo full_page_writes=off >> $postgresfile &&\
+    echo bgwriter_lru_maxpages=0 >> $postgresfile
