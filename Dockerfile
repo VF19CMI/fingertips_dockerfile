@@ -10,7 +10,7 @@ ENV LANG en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 ENV CONFIGURE_OPTS --disable-install-doc
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update -yqq && apt-get install -yqq \
       build-essential \
       checkinstall \
       libssl-dev \
@@ -40,7 +40,7 @@ RUN apt-get update && apt-get install -y \
       libmysqlclient-dev \
       libsqlite3-dev ;
 
-RUN apt-get -q update \
+RUN apt-get -yqq update \
   && DEBIAN_FRONTEND=noninteractive apt-get -q -y install wget \
   && apt-get -q clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -56,7 +56,7 @@ RUN wget -O - https://github.com/sstephenson/ruby-build/archive/master.tar.gz \
 RUN echo 'eval "$(rbenv init -)"' >> $HOME/.profile
 RUN echo 'eval "$(rbenv init -)"' >> $HOME/.bashrc
 
-RUN apt-get update -q \
+RUN apt-get update -yqq \
   && apt-get -q -y install autoconf bison build-essential libssl-dev libyaml-dev libreadline6-dev zlib1g-dev \
   && rbenv install 2.4.3 \
   && rbenv install 2.6.1 \
