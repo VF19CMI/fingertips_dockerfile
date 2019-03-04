@@ -1,7 +1,6 @@
-FROM ubuntu:19.04
+FROM ubuntu-debootstrap:trusty
 MAINTAINER Georgi Martsenkov <georgi.martsenkov@vodafone.com>
 
-RUN apt-get clean && apt-get update && apt-get install -y locales
 RUN locale-gen en_US.UTF-8
 
 ENV HOME /root
@@ -10,9 +9,6 @@ ENV SHELL /bin/bash
 ENV LANG en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 ENV CONFIGURE_OPTS --disable-install-doc
-ENV TZ=Europe/London
-
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get update -yqq && apt-get install -yqq \
       build-essential \
@@ -34,7 +30,7 @@ RUN apt-get update -yqq && apt-get install -yqq \
       libpq-dev \
       postgresql \
       postgresql-contrib \
-      postgresql-server-dev-11 \
+      postgresql-server-dev-9.3 \
       apt-transport-https\
       nodejs \
       sqlite3 \
@@ -88,11 +84,11 @@ RUN alien -i /opt/oracle/oracle-instantclient12.1-basic-12.1.0.2.0-1.x86_64.rpm 
 
 RUN cd /opt/oracle_fdw && make && make install
 
-RUN echo "LD_LIBRARY_PATH='/usr/lib/oracle/12.1/client64/lib'" >> /etc/postgresql/11/main/environment
-RUN echo "NLS_LANG=American_America.UTF8" >> /etc/postgresql/11/main/environment
+RUN echo "LD_LIBRARY_PATH='/usr/lib/oracle/12.1/client64/lib'" >> /etc/postgresql/9.3/main/environment
+RUN echo "NLS_LANG=American_America.UTF8" >> /etc/postgresql/9.3/main/environment
 
 ENV PGDATA /dev/shm/pgdata/data
-RUN postgresfile=/usr/share/postgresql/11/postgresql.conf.sample; \
+RUN postgresfile=/usr/share/postgresql/9.3/postgresql.conf.sample; \
     echo fsync=off >> $postgresfile &&\
     echo synchronous_commit=off >> $postgresfile &&\
     echo full_page_writes=off >> $postgresfile &&\
