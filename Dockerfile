@@ -69,7 +69,7 @@ RUN apt-get update -yqq \
 RUN rbenv global 2.4.3
 RUN gem install --no-ri --no-rdoc bundler
 RUN rbenv global 2.2.3
-RUN gem install --no-ri --no-rdoc bundler
+RUN gem install --no-ri --no-rdoc bundler -v 1.17.3 
 RUN rbenv rehash
 
 # Oracle stuff
