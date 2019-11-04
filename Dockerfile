@@ -66,8 +66,6 @@ RUN apt-get update -yqq \
   && rbenv install 2.6.2 \
   && rm -rf /var/lib/apt/lists
 
-RUN rbenv global 2.6.2
-RUN gem install --no-ri --no-rdoc bundler
 RUN rbenv global 2.4.3
 RUN gem install --no-ri --no-rdoc bundler
 RUN rbenv global 2.2.3
