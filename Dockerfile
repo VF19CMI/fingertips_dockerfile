@@ -64,8 +64,11 @@ RUN apt-get update -yqq \
   && rbenv install 2.2.3 \
   && rbenv install 2.4.3 \
   && rbenv install 2.6.2 \
+  && rbenv install 2.7.1 \
   && rm -rf /var/lib/apt/lists
 
+RUN rbenv global 2.7.1
+RUN gem install bundler:2.0.2
 RUN rbenv global 2.6.2
 RUN gem install bundler:2.0.2
 RUN rbenv global 2.4.3
