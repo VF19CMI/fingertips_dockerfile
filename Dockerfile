@@ -48,35 +48,6 @@ RUN apt-get -yqq update \
   && apt-get -q clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN wget -O - https://github.com/sstephenson/rbenv/archive/master.tar.gz \
-  | tar zxf - \
-  && mv rbenv-master $HOME/.rbenv
-RUN wget -O - https://github.com/sstephenson/ruby-build/archive/master.tar.gz \
-  | tar zxf - \
-  && mkdir -p $HOME/.rbenv/plugins \
-  && mv ruby-build-master $HOME/.rbenv/plugins/ruby-build
-
-RUN echo 'eval "$(rbenv init -)"' >> $HOME/.profile
-RUN echo 'eval "$(rbenv init -)"' >> $HOME/.bashrc
-
-RUN apt-get update -yqq \
-  && apt-get -q -y install autoconf bison build-essential libssl-dev libyaml-dev libreadline6-dev zlib1g-dev \
-  && rbenv install 2.2.3 \
-  && rbenv install 2.4.3 \
-  && rbenv install 2.6.2 \
-  && rbenv install 2.7.1 \
-  && rm -rf /var/lib/apt/lists
-
-RUN rbenv global 2.7.1
-RUN gem install bundler:2.0.2
-RUN rbenv global 2.6.2
-RUN gem install bundler:2.0.2
-RUN rbenv global 2.4.3
-RUN gem install --no-ri --no-rdoc bundler
-RUN rbenv global 2.2.3
-RUN gem install --no-ri --no-rdoc bundler -v 1.17.3 
-RUN rbenv rehash
-
 # Oracle stuff
 RUN mkdir -p /opt/oracle
 RUN mkdir -p /opt/oracle_fdw
@@ -104,3 +75,8 @@ RUN postgresfile=/usr/share/postgresql/11/postgresql.conf.sample; \
     echo synchronous_commit=off >> $postgresfile &&\
     echo full_page_writes=off >> $postgresfile &&\
     echo bgwriter_lru_maxpages=0 >> $postgresfile
+
+RUN wget https://packages.erlang-solutions.com/erlang-solutions_2.0_all.deb && sudo dpkg -i erlang-solutions_2.0_all.deb
+RUN sudo apt-get update -yqq
+RUN sudo apt-get install -yqq esl-erlang
+RUN sudo apt-get install -yqq elixir
