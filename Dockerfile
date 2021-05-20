@@ -85,9 +85,11 @@ RUN postgresfile=/usr/share/postgresql/11/postgresql.conf.sample; \
 
 RUN git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.1
 ENV PATH $HOME/.asdf/bin::$PATH
+ENV PATH $HOME/.asdf/shims::$PATH
 RUN echo '. $HOME/.asdf/asdf.sh' > ~/.bashrc
-RUN exec /bin/bash
 RUN asdf plugin add erlang
 RUN asdf plugin add elixir
 RUN asdf install erlang 23.1.1
 RUN asdf install elixir 1.11.2
+RUN asdf global elixir 1.11.2
+RUN asdf global erlang 23.1.1
