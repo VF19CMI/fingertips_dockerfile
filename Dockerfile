@@ -1,6 +1,9 @@
-FROM ubuntu-debootstrap:trusty
+FROM ubuntu:16.04
 MAINTAINER Georgi Martsenkov <georgi.martsenkov@vodafone.com>
 
+SHELL ["/bin/bash", "-c"]
+
+RUN apt-get update -yqq && apt-get install -yqq locales
 RUN locale-gen en_US.UTF-8
 
 ENV HOME /root
@@ -10,9 +13,10 @@ ENV LANG en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 ENV CONFIGURE_OPTS --disable-install-doc
 
-RUN apt-get update -yqq && apt-get install -yqq wget
+RUN apt-get update -yqq && apt-get install -yqq wget lsb-release software-properties-common locales
+RUN locale-gen en_US.UTF-8
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
-RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main" | tee /etc/apt/sources.list.d/pgdg.list
+RUN RELEASE=$(lsb_release -cs) && echo "deb http://apt.postgresql.org/pub/repos/apt/ ${RELEASE}"-pgdg main | tee  /etc/apt/sources.list.d/pgdg.list
 RUN apt-get update -yqq && apt-get install -yqq \
       build-essential \
       checkinstall \
@@ -34,6 +38,7 @@ RUN apt-get update -yqq && apt-get install -yqq \
       postgresql-11 \
       postgresql-contrib \
       postgresql-server-dev-11 \
+      postgresql-server-dev-13 \
       apt-transport-https\
       nodejs \
       sqlite3 \
@@ -41,6 +46,8 @@ RUN apt-get update -yqq && apt-get install -yqq \
       tmux \
       wget \
       libmysqlclient-dev \
+      autoconf \
+      unzip \
       libsqlite3-dev ;
 
 RUN apt-get -yqq update \
@@ -76,7 +83,11 @@ RUN postgresfile=/usr/share/postgresql/11/postgresql.conf.sample; \
     echo full_page_writes=off >> $postgresfile &&\
     echo bgwriter_lru_maxpages=0 >> $postgresfile
 
-RUN wget https://packages.erlang-solutions.com/erlang-solutions_2.0_all.deb && sudo dpkg -i erlang-solutions_2.0_all.deb
-RUN sudo apt-get update -yqq
-RUN sudo apt-get install -yqq esl-erlang
-RUN sudo apt-get install -yqq elixir
+RUN git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.1
+ENV PATH $HOME/.asdf/bin::$PATH
+RUN echo '. $HOME/.asdf/asdf.sh' > ~/.bashrc
+RUN exec /bin/bash
+RUN asdf plugin add erlang
+RUN asdf plugin add elixir
+RUN asdf install erlang 23.1.1
+RUN asdf install elixir 1.11.2
