@@ -35,9 +35,8 @@ RUN apt-get update -yqq && apt-get install -yqq \
       git \
       curl \
       libpq-dev \
-      postgresql-11 \
+      postgresql \
       postgresql-contrib \
-      postgresql-server-dev-11 \
       postgresql-server-dev-13 \
       apt-transport-https\
       nodejs \
@@ -73,11 +72,11 @@ RUN alien -i /opt/oracle/oracle-instantclient12.1-basic-12.1.0.2.0-1.x86_64.rpm 
 
 RUN cd /opt/oracle_fdw && make && make install
 
-RUN echo "LD_LIBRARY_PATH='/usr/lib/oracle/12.1/client64/lib'" >> /etc/postgresql/11/main/environment
-RUN echo "NLS_LANG=American_America.UTF8" >> /etc/postgresql/11/main/environment
+RUN echo "LD_LIBRARY_PATH='/usr/lib/oracle/12.1/client64/lib'" >> /etc/postgresql/13/main/environment
+RUN echo "NLS_LANG=American_America.UTF8" >> /etc/postgresql/13/main/environment
 
 ENV PGDATA /dev/shm/pgdata/data
-RUN postgresfile=/usr/share/postgresql/11/postgresql.conf.sample; \
+RUN postgresfile=/usr/share/postgresql/13/postgresql.conf.sample; \
     echo fsync=off >> $postgresfile &&\
     echo synchronous_commit=off >> $postgresfile &&\
     echo full_page_writes=off >> $postgresfile &&\
