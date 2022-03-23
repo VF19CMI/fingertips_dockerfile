@@ -1,19 +1,19 @@
-FROM ubuntu-debootstrap:trusty
+FROM ubuntu:focal
 MAINTAINER Georgi Martsenkov <georgi.martsenkov@vodafone.com>
 
-RUN locale-gen en_US.UTF-8
-
 ENV HOME /root
+ENV TZ=Europe/London
+ENV DEBIAN_FRONTEND=noninteractive
 ENV PATH $HOME/.rbenv/bin:$HOME/.rbenv/shims:$PATH
 ENV SHELL /bin/bash
 ENV LANG en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 ENV CONFIGURE_OPTS --disable-install-doc
 
-RUN apt-get update -yqq && apt-get install -yqq wget
-RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
-RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main" | tee /etc/apt/sources.list.d/pgdg.list
-RUN apt-get update -yqq && apt-get install -yqq \
+RUN apt-get update -yqq && apt-get install -yqq locales
+RUN locale-gen en_US.UTF-8
+RUN apt-get install -yqq \
+      locales \
       build-essential \
       checkinstall \
       libssl-dev \
@@ -31,9 +31,10 @@ RUN apt-get update -yqq && apt-get install -yqq \
       git \
       curl \
       libpq-dev \
-      postgresql-11 \
+      postgresql \
       postgresql-contrib \
-      postgresql-server-dev-11 \
+      postgresql-server-dev-all \
+      libpq-dev \
       apt-transport-https\
       nodejs \
       sqlite3 \
@@ -60,8 +61,7 @@ RUN echo 'eval "$(rbenv init -)"' >> $HOME/.profile
 RUN echo 'eval "$(rbenv init -)"' >> $HOME/.bashrc
 
 RUN apt-get update -yqq \
-  && apt-get -q -y install autoconf bison build-essential libssl-dev libyaml-dev libreadline6-dev zlib1g-dev \
-  && rbenv install 2.2.3 \
+  && apt-get -q -y install autoconf bison build-essential libssl1.0 libssl-dev libyaml-dev libreadline6-dev zlib1g-dev \
   && rbenv install 2.4.3 \
   && rbenv install 2.6.2 \
   && rbenv install 2.7.1 \
@@ -73,8 +73,6 @@ RUN rbenv global 2.6.2
 RUN gem install bundler:2.0.2
 RUN rbenv global 2.4.3
 RUN gem install --no-ri --no-rdoc bundler
-RUN rbenv global 2.2.3
-RUN gem install --no-ri --no-rdoc bundler -v 1.17.3 
 RUN rbenv rehash
 
 # Oracle stuff
@@ -95,11 +93,11 @@ RUN alien -i /opt/oracle/oracle-instantclient12.1-basic-12.1.0.2.0-1.x86_64.rpm 
 
 RUN cd /opt/oracle_fdw && make && make install
 
-RUN echo "LD_LIBRARY_PATH='/usr/lib/oracle/12.1/client64/lib'" >> /etc/postgresql/11/main/environment
-RUN echo "NLS_LANG=American_America.UTF8" >> /etc/postgresql/11/main/environment
+RUN echo "LD_LIBRARY_PATH='/usr/lib/oracle/12.1/client64/lib'" >> /etc/postgresql/12/main/environment
+RUN echo "NLS_LANG=American_America.UTF8" >> /etc/postgresql/12/main/environment
 
 ENV PGDATA /dev/shm/pgdata/data
-RUN postgresfile=/usr/share/postgresql/11/postgresql.conf.sample; \
+RUN postgresfile=/usr/share/postgresql/12/postgresql.conf.sample; \
     echo fsync=off >> $postgresfile &&\
     echo synchronous_commit=off >> $postgresfile &&\
     echo full_page_writes=off >> $postgresfile &&\
