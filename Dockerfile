@@ -1,8 +1,10 @@
-FROM ubuntu-debootstrap:trusty
+FROM ubuntu:18.04
 MAINTAINER Georgi Martsenkov <georgi.martsenkov@vodafone.com>
 
+RUN apt-get update -yqq && apt-get install -yqq locales
 RUN locale-gen en_US.UTF-8
 
+ENV DEBIAN_FRONTEND=noninteractive
 ENV HOME /root
 ENV PATH $HOME/.rbenv/bin:$HOME/.rbenv/shims:$PATH
 ENV SHELL /bin/bash
@@ -10,15 +12,16 @@ ENV LANG en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 ENV CONFIGURE_OPTS --disable-install-doc
 
-RUN apt-get update -yqq && apt-get install -yqq wget
-RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
-RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main" | tee /etc/apt/sources.list.d/pgdg.list
+RUN ln -fs /usr/share/zoneinfo/Europe/London /etc/localtime
+RUN apt-get update -yqq && apt-get install -yqq wget gnupg lsb-release
+RUN wget --no-check-certificate --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+RUN echo "deb http://apt.postgresql.org/pub/repos/apt/  $(lsb_release -cs)-pgdg main" | tee /etc/apt/sources.list.d/pgdg.list
 RUN apt-get update -yqq && apt-get install -yqq \
       build-essential \
       checkinstall \
       libssl-dev \
       bash \
-      npm \
+      nodejs \
       sudo \
       libpng-dev \
       alien \
@@ -32,7 +35,7 @@ RUN apt-get update -yqq && apt-get install -yqq \
       curl \
       libpq-dev \
       postgresql-11 \
-      postgresql-contrib \
+      postgresql-contrib-11 \
       postgresql-server-dev-11 \
       apt-transport-https\
       nodejs \
@@ -60,9 +63,7 @@ RUN echo 'eval "$(rbenv init -)"' >> $HOME/.profile
 RUN echo 'eval "$(rbenv init -)"' >> $HOME/.bashrc
 
 RUN apt-get update -yqq \
-  && apt-get -q -y install autoconf bison build-essential libssl-dev libyaml-dev libreadline6-dev zlib1g-dev \
-  && rbenv install 2.2.3 \
-  && rbenv install 2.4.3 \
+  && apt-get -q -y install autoconf bison build-essential libssl-dev libyaml-dev libreadline-dev zlib1g-dev \
   && rbenv install 2.6.2 \
   && rbenv install 2.7.1 \
   && rm -rf /var/lib/apt/lists
@@ -71,10 +72,6 @@ RUN rbenv global 2.7.1
 RUN gem install bundler:2.0.2
 RUN rbenv global 2.6.2
 RUN gem install bundler:2.0.2
-RUN rbenv global 2.4.3
-RUN gem install --no-ri --no-rdoc bundler
-RUN rbenv global 2.2.3
-RUN gem install --no-ri --no-rdoc bundler -v 1.17.3 
 RUN rbenv rehash
 
 # Oracle stuff
