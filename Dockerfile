@@ -1,5 +1,5 @@
 FROM ubuntu:18.04
-MAINTAINER Georgi Martsenkov <georgi.martsenkov@vodafone.com>
+LABEL author Georgi Martsenkov <georgi.martsenkov@vodafone.com>
 
 RUN apt-get update -yqq && apt-get install -yqq locales
 RUN locale-gen en_US.UTF-8
@@ -69,9 +69,9 @@ RUN apt-get update -yqq \
   && rm -rf /var/lib/apt/lists
 
 RUN rbenv global 2.7.1
-RUN gem install bundler:2.0.2
+RUN gem install bundler:2.2.34
 RUN rbenv global 2.6.2
-RUN gem install bundler:2.0.2
+RUN gem install bundler:2.2.34
 RUN rbenv rehash
 
 # Oracle stuff
