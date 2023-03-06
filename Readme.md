@@ -3,7 +3,7 @@
 Login to Vodafone dockerhub
 - `docker login -u USERNAME_IN_1_PASS -p PASS_IN_1_PASS`
 
-Downlad oracle tools
+Download oracle tools
 - `git submodule init && git submodule update`
 
 Build the image
