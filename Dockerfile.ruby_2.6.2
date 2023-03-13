@@ -1,0 +1,47 @@
+FROM ruby:2.6.2
+
+RUN apt-get update -yqq && apt-get install -yqq locales
+RUN locale-gen en_US.UTF-8
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV HOME /root
+ENV SHELL /bin/bash
+ENV CONFIGURE_OPTS --disable-install-doc
+
+RUN ln -fs /usr/share/zoneinfo/Europe/London /etc/localtime
+RUN apt-get update -yqq && apt-get install -yqq \
+  alien \
+  apt-transport-https\
+  bash \
+  curl \
+  git \
+  gnupg \
+  lsb-release \
+  build-essential \
+  libssl-dev \
+  libpng-dev \
+  libaio1 \
+  libaio-dev \
+  libxml2-dev \
+  libxslt1-dev \
+  libxml2-dev \
+  libxslt1-dev \
+  libpq-dev \
+  libsqlite3-dev\
+  sqlite3 \
+  wget;
+
+RUN gem install bundler
+
+# Oracle Settings
+ENV ORACLE_HOME /usr/lib/oracle/12.1/client64
+ENV LD_LIBRARY_PATH $ORACLE_HOME/lib/:$LD_LIBRARY_PATH
+ENV NLS_LANG American_America.UTF8
+ENV PATH $ORACLE_HOME/bin:$PATH
+
+# Install Oracle Client
+COPY ./vendor/*.rpm /opt/oracle/
+
+RUN alien -i /opt/oracle/oracle-instantclient12.1-basic-12.1.0.2.0-1.x86_64.rpm \
+  && alien -i /opt/oracle/oracle-instantclient12.1-devel-12.1.0.2.0-1.x86_64.rpm \
+  && alien -i /opt/oracle/oracle-instantclient12.1-sqlplus-12.1.0.2.0-1.x86_64.rpm
