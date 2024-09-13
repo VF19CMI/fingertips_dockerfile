@@ -86,9 +86,9 @@ ENV NLS_LANG American_America.UTF8
 ENV PATH $ORACLE_HOME/bin:$PATH
 
 # Install Oracle Client
-RUN alien -i /opt/oracle/oracle-instantclient12.1-basic-12.1.0.2.0-1.x86_64.rpm \
-  && alien -i /opt/oracle/oracle-instantclient12.1-devel-12.1.0.2.0-1.x86_64.rpm \
-  && alien -i /opt/oracle/oracle-instantclient12.1-sqlplus-12.1.0.2.0-1.x86_64.rpm
+RUN alien -i /opt/oracle/oracle-instantclient19.23-basic-19.23.0.0.0-1.x86_64.rpm \
+  && alien -i /opt/oracle/oracle-instantclient19.23-devel-19.23.0.0.0-1.x86_64.rpm \
+  && alien -i /opt/oracle/oracle-instantclient19.23-sqlplus-19.23.0.0.0-1.x86_64.rpm
 
 RUN cd /opt/oracle_fdw && make && make install
 
