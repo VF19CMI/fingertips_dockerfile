@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 LABEL author Georgi Martsenkov <georgi.martsenkov@vodafone.com>
 
 RUN apt-get update -yqq && apt-get install -yqq locales
@@ -66,12 +66,15 @@ RUN apt-get update -yqq \
   && apt-get -q -y install autoconf bison build-essential libssl-dev libyaml-dev libreadline-dev zlib1g-dev \
   && rbenv install 2.6.2 \
   && rbenv install 2.7.1 \
+  && rbenv install 3.3.4 \
   && rm -rf /var/lib/apt/lists
 
 RUN rbenv global 2.7.1
 RUN gem install bundler:2.2.34
 RUN rbenv global 2.6.2
 RUN gem install bundler:2.2.34
+RUN rbenv global 3.3.4
+RUN gem install bundler:2.6.1
 RUN rbenv rehash
 
 # Oracle stuff
