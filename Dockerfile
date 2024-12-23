@@ -80,7 +80,7 @@ RUN rbenv rehash
 # Oracle stuff
 RUN mkdir -p /opt/oracle
 RUN mkdir -p /opt/oracle_fdw
-COPY ./vendor/*.rpm /opt/oracle/
+COPY ./vendor/*.deb /opt/oracle/
 COPY ./vendor/oracle_fdw/* /opt/oracle_fdw/
 
 ENV ORACLE_HOME /usr/lib/oracle/12.1/client64
@@ -89,9 +89,9 @@ ENV NLS_LANG American_America.UTF8
 ENV PATH $ORACLE_HOME/bin:$PATH
 
 # Install Oracle Client
-RUN alien -i /opt/oracle/oracle-instantclient12.1-basic-12.1.0.2.0-1.x86_64.rpm \
-  && alien -i /opt/oracle/oracle-instantclient12.1-devel-12.1.0.2.0-1.x86_64.rpm \
-  && alien -i /opt/oracle/oracle-instantclient12.1-sqlplus-12.1.0.2.0-1.x86_64.rpm
+RUN dpkg -i /opt/oracle/oracle-instantclient12.1-basic_12.1.0.2.0-2_amd64.deb \
+  && dpkg -i /opt/oracle/oracle-instantclient12.1-devel_12.1.0.2.0-2_amd64.deb \
+  && dpkg -i /opt/oracle/oracle-instantclient12.1-sqlplus_12.1.0.2.0-2_amd64.deb
 
 RUN cd /opt/oracle_fdw && make && make install
 
